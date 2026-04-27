@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StyleForge</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      width: 400px;
+      min-height: 500px;
+      background: #f9fafb;
+      color: #1f2937;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: white;
+      color: #667eea;
+    }
+
+    .btn-primary:hover {
+      background: #f3f4f6;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #374151;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .element-selector {
+      background: #f3f4f6;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 12px;
+      color: #1f2937;
+      word-break: break-all;
+      margin-bottom: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6b7280;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: #667eea;
+    }
+
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .context-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .context-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .context-label {
+      font-size: 11px;
+      color: #6b7280;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .select {
+      padding: 6px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 12px;
+      background: white;
+      cursor: pointer;
+      min-width: 100px;
+    }
+
+    .select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .property-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .property-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .property-label {
+      font-size: 11px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .property-input {
+      padding: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .property-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .color-input-wrapper {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .color-picker {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .color-text {
+      flex: 1;
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+    }
+
+    .checkbox {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .tailwind-search {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .tailwind-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: #eef2ff;
+      color: #667eea;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .chip-remove {
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .chip-remove:hover {
+      opacity: 1;
+    }
+
+    .export-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .export-format {
+      display: flex;
+      gap: 8px;
+    }
+
+    .format-btn {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      background: white;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .format-btn:hover {
+      border-color: #667eea;
+    }
+
+    .format-btn.active {
+      border-color: #667eea;
+      background: #eef2ff;
+      color: #667eea;
+    }
+
+    .code-preview {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 11px;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .history-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      padding: 8px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .history-item:hover {
+      background: #f9fafb;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #9ca3af;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #e5e7eb;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .category {
+      margin-bottom: 16px;
+    }
+
+    .category-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #667eea;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎨 StyleForge</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" id="btnInspector">🔍</button>
+      <button class="btn btn-secondary" id="btnUndo">↶</button>
+      <button class="btn btn-secondary" id="btnRedo">↷</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="loadingState" class="loading">
+      <div class="spinner"></div>
+    </div>
+
+    <div id="emptyState" class="empty-state hidden">
+      <div class="empty-state-icon">🎯</div>
+      <p>No element selected</p>
+      <p style="font-size: 12px; margin-top: 8px;">Click the inspector button or press Ctrl+Shift+E to select an element</p>
+    </div>
+
+    <div id="editorContent" class="hidden">
+      <div class="section">
+        <div class="element-selector" id="elementSelector"></div>
+        
+        <div class="context-controls">
+          <div class="context-group">
+            <label class="context-label">State</label>
+            <select class="select" id="stateSelect">
+              <option value="base">Base</option>
+              <option value="hover">:hover</option>
+              <option value="focus">:focus</option>
+              <option value="focus-visible">:focus-visible</option>
+              <option value="active">:active</option>
+              <option value="disabled">:disabled</option>
+              <option value="checked">:checked</option>
+            </select>
+          </div>
+          
+          <div class="context-group">
+            <label class="context-label">Breakpoint</label>
+            <select class="select" id="breakpointSelect">
+              <option value="all">All</option>
+              <option value="sm">sm (640px)</option>
+              <option value="md">md (768px)</option>
+              <option value="lg">lg (1024px)</option>
+              <option value="xl">xl (1280px)</option>
+              <option value="2xl">2xl (1536px)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="tabs">
+          <div class="tab active" data-tab="css">CSS</div>
+          <div class="tab" data-tab="tailwind">Tailwind</div>
+          <div class="tab" data-tab="export">Export</div>
+          <div class="tab" data-tab="history">History</div>
+        </div>
+
+        <div id="tab-css" class="tab-content">
+          <div class="category">
+            <div class="category-title">Typography</div>
+            <div class="property-grid">
+              <div class="property-item">
+                <label class="property-label">Font Size</label>
+                <input type="text" class="property-input" data-property="font-size" placeholder="16px">
+              </div>
+              <div class="property-item">
+                <label class="property-label">Font Weight</label>
+                <select class="property-input" data-property="font-weight">
+                  <option value="">Auto</option>
+                  <option value="100">Thin (100)</option>
+                  <option value="200">Extra Light (200)</option>
+                  <option value="300">Light (300)</option>
+                  <option value="400">Normal (400)</option>
+                  <option value="500">Medium (500)</option>
+                  <option value="600">Semi Bold (600)</option>
+                  <option value="700">Bold (700)</option>
+                  <option value="800">Extra Bold (800)</option>
+                  <option value="900">Black (900)</option>
+                </select>
+              </div>
+              <div class="property-item">
+                <label class="property-label">Line Height</label>
+                <input type="text" class="property-input" data-property="line-height" placeholder="1.5">
+              </div>
+              <div class="property-item">
+                <label class="property-label">Text Align</label>
+                <select class="property-input" data-property="text-align">
+                  <option value="">Auto</option>
+                  <option value="left">Left</option>
+                  <option value="center">Center</option>
+                  <option value="right">Right</option>
+                  <option value="justify">Justify</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="category">
+            <div class="category-title">Colors</div>
+            <div class="property-grid">
+              <div class="property-item">
+                <label class="property-label">Text Color</label>
+                <div class="color-input-wrapper">
+                  <input type="color" class="color-picker" data-property="color">
+                  <input type="text" class="property-input color-text" data-property="color" placeholder="#000000">
+                </div>
+              </div>
+              <div class="property-item">
+                <label class="property-label">Background</label>
+                <div class="color-input-wrapper">
+                  <input type="color" class="color-picker" data-property="background-color">
+                  <input type="text" class="property-input color-text" data-property="background-color" placeholder="#ffffff">
+                </div>
+              </div>
+              <div class="property-item">
+                <label class="property-label">Opacity</label>
+                <input type="range" class="property-input" data-property="opacity" min="0" max="1" step="0.1">
+              </div>
+            </div>
+          </div>
+
+          <div class="category">
+            <div class="category-title">Box Model</div>
+            <div class="property-grid">
+              <div class="property-item">
+                <label class="property-label">Width</label>
+                <input type="text" class="property-input" data-property="width" placeholder="auto">
+              </div>
+              <div class="property-item">
+                <label class="property-label">Height</label>
+                <input type="text" class="property-input" data-property="height" placeholder="auto">
+              </div>
+              <div class="property-item">
+                <label class="property-label">Padding</label>
+                <input type="text" class="property-input" data-property="padding" placeholder="0">
+              </div>
+              <div class="property-item">
+                <label class="property-label">Margin</label>
+                <input type="text" class="property-input" data-property="margin" placeholder="0">
+              </div>
+              <div class="property-item">
+                <label class="property-label">Border Radius</label>
+                <input type="text" class="property-input" data-property="border-radius" placeholder="0">
+              </div>
+              <div class="property-item">
+                <label class="property-label">Display</label>
+                <select class="property-input" data-property="display">
+                  <option value="">Auto</option>
+                  <option value="block">Block</option>
+                  <option value="inline-block">Inline Block</option>
+                  <option value="flex">Flex</option>
+                  <option value="inline-flex">Inline Flex</option>
+                  <option value="grid">Grid</option>
+                  <option value="inline-grid">Inline Grid</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="category">
+            <div class="category-title">Effects</div>
+            <div class="property-grid">
+              <div class="property-item">
+                <label class="property-label">Box Shadow</label>
+                <input type="text" class="property-input" data-property="box-shadow" placeholder="0 0 0 rgba(0,0,0,0)">
+              </div>
+              <div class="property-item">
+                <label class="property-label">Filter</label>
+                <input type="text" class="property-input" data-property="filter" placeholder="none">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-tailwind" class="tab-content hidden">
+          <input type="text" class="tailwind-search" id="tailwindSearch" placeholder="Search Tailwind classes...">
+          <div class="tailwind-chips" id="tailwindChips"></div>
+        </div>
+
+        <div id="tab-export" class="tab-content hidden">
+          <div class="export-options">
+            <div class="export-format">
+              <button class="format-btn active" data-format="css">CSS</button>
+              <button class="format-btn" data-format="tailwind">Tailwind</button>
+              <button class="format-btn" data-format="json">JSON</button>
+            </div>
+            <div class="code-preview" id="codePreview"></div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-primary" id="btnCopyCode" style="flex: 1;">Copy</button>
+              <button class="btn btn-primary" id="btnDownloadCode" style="flex: 1;">Download</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-history" class="tab-content hidden">
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <button class="btn btn-danger" id="btnReset" style="width: 100%;">Reset Styles</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

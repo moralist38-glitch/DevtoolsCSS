@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StyleForge - Visual Style Editor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #1f2937;
+      --bg-secondary: #374151;
+      --bg-tertiary: #4b5563;
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #4b5563;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      width: 420px;
+      min-height: 500px;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-logo {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Element Selector Bar */
+    .element-bar {
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .selector-display {
+      background: var(--bg-tertiary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 8px;
+    }
+
+    .element-path {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .path-segment {
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .path-segment:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px 12px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Context Controls */
+    .context-controls {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .control-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-buttons {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-context {
+      padding: 4px 8px;
+      font-size: 11px;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-context:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+    }
+
+    .btn-context.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 16px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Property Groups */
+    .property-group {
+      margin-bottom: 16px;
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .group-header:hover {
+      color: var(--accent);
+    }
+
+    .group-toggle {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Property Rows */
+    .property-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .property-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .property-input {
+      width: 100%;
+      padding: 6px 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: 12px;
+      font-family: 'Monaco', 'Consolas', monospace;
+    }
+
+    .property-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .property-input.invalid {
+      border-color: var(--danger);
+    }
+
+    /* Color Input */
+    .color-input-wrapper {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .color-picker {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+    }
+
+    .color-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .color-picker::-webkit-color-swatch {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .color-value {
+      flex: 1;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-secondary);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* Tailwind Search */
+    .search-box {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px 10px 36px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Applied Classes */
+    .applied-classes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .class-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      color: var(--text-secondary);
+    }
+
+    .class-chip-remove {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .class-chip-remove:hover {
+      color: var(--danger);
+    }
+
+    /* Export Panel */
+    .export-options {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .export-format {
+      flex: 1;
+      padding: 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .code-preview {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 11px;
+      color: #c9d1d9;
+      max-height: 200px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: 12px;
+    }
+
+    /* History List */
+    .history-list {
+      list-style: none;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .history-time {
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state-text {
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* Inspector Button */
+    .btn-inspector {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: white;
+    }
+
+    .btn-inspector:hover {
+      opacity: 0.9;
+    }
+
+    .btn-inspector.active {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--bg-secondary);
+    }
+
+    /* Footer Actions */
+    .footer-actions {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+
+    .notification.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .notification.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .notification.error {
+      border-left: 4px solid var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>
+      <div class="header-logo">SF</div>
+      StyleForge
+    </h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary btn-sm" id="btn-reset" title="Reset All Styles">
+        🔄 Reset
+      </button>
+      <button class="btn btn-inspector btn-sm" id="btn-inspector" title="Activate Inspector (Ctrl+Shift+E)">
+        🔍 Inspect
+      </button>
+    </div>
+  </div>
+
+  <!-- Element Bar -->
+  <div class="element-bar" id="element-bar" style="display: none;">
+    <div class="selector-display" id="selector-display">No element selected</div>
+    <div class="element-path" id="element-path"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" data-tab="css">CSS</div>
+    <div class="tab" data-tab="tailwind">Tailwind</div>
+    <div class="tab" data-tab="history">History</div>
+    <div class="tab" data-tab="export">Export</div>
+  </div>
+
+  <!-- Context Controls -->
+  <div class="context-controls">
+    <div class="control-group">
+      <div class="control-label">State</div>
+      <div class="control-buttons" id="state-buttons">
+        <button class="btn-context active" data-state="base">Base</button>
+        <button class="btn-context" data-state="hover">:hover</button>
+        <button class="btn-context" data-state="focus">:focus</button>
+        <button class="btn-context" data-state="active">:active</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="control-label">Breakpoint</div>
+      <div class="control-buttons" id="breakpoint-buttons">
+        <button class="btn-context active" data-breakpoint="all">All</button>
+        <button class="btn-context" data-breakpoint="sm">sm</button>
+        <button class="btn-context" data-breakpoint="md">md</button>
+        <button class="btn-context" data-breakpoint="lg">lg</button>
+        <button class="btn-context" data-breakpoint="xl">xl</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- CSS Tab -->
+    <div class="tab-content active" id="tab-css">
+      <div id="css-properties">
+        <!-- Typography -->
+        <div class="property-group">
+          <div class="group-header">
+            <span>Typography</span>
+            <span class="group-toggle">▼</span>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Font Size</label>
+            <input type="text" class="property-input" data-prop="fontSize" placeholder="16px">
+          </div>
+          <div class="property-row">
+            <label class="property-label">Font Weight</label>
+            <select class="property-input" data-prop="fontWeight">
+              <option value="">Auto</option>
+              <option value="100">100 Thin</option>
+              <option value="200">200 Extra Light</option>
+              <option value="300">300 Light</option>
+              <option value="400">400 Normal</option>
+              <option value="500">500 Medium</option>
+              <option value="600">600 Semi Bold</option>
+              <option value="700">700 Bold</option>
+              <option value="800">800 Extra Bold</option>
+              <option value="900">900 Black</option>
+            </select>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Line Height</label>
+            <input type="text" class="property-input" data-prop="lineHeight" placeholder="1.5">
+          </div>
+          <div class="property-row">
+            <label class="property-label">Text Align</label>
+            <select class="property-input" data-prop="textAlign">
+              <option value="">Auto</option>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+              <option value="justify">Justify</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Colors -->
+        <div class="property-group">
+          <div class="group-header">
+            <span>Colors</span>
+            <span class="group-toggle">▼</span>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Text Color</label>
+            <div class="color-input-wrapper">
+              <input type="color" class="color-picker" data-prop="color">
+              <input type="text" class="property-input color-value" data-prop="color" placeholder="#000000">
+            </div>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Background</label>
+            <div class="color-input-wrapper">
+              <input type="color" class="color-picker" data-prop="backgroundColor">
+              <input type="text" class="property-input color-value" data-prop="backgroundColor" placeholder="#ffffff">
+            </div>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Opacity</label>
+            <input type="range" class="property-input" data-prop="opacity" min="0" max="1" step="0.1">
+          </div>
+        </div>
+
+        <!-- Box Model -->
+        <div class="property-group">
+          <div class="group-header">
+            <span>Box Model</span>
+            <span class="group-toggle">▼</span>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Width</label>
+            <input type="text" class="property-input" data-prop="width" placeholder="auto">
+          </div>
+          <div class="property-row">
+            <label class="property-label">Height</label>
+            <input type="text" class="property-input" data-prop="height" placeholder="auto">
+          </div>
+          <div class="property-row">
+            <label class="property-label">Padding</label>
+            <input type="text" class="property-input" data-prop="padding" placeholder="0">
+          </div>
+          <div class="property-row">
+            <label class="property-label">Margin</label>
+            <input type="text" class="property-input" data-prop="margin" placeholder="0">
+          </div>
+          <div class="property-row">
+            <label class="property-label">Border Radius</label>
+            <input type="text" class="property-input" data-prop="borderRadius" placeholder="0">
+          </div>
+        </div>
+
+        <!-- Layout -->
+        <div class="property-group">
+          <div class="group-header">
+            <span>Layout</span>
+            <span class="group-toggle">▼</span>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Display</label>
+            <select class="property-input" data-prop="display">
+              <option value="">Auto</option>
+              <option value="block">Block</option>
+              <option value="inline-block">Inline Block</option>
+              <option value="flex">Flex</option>
+              <option value="inline-flex">Inline Flex</option>
+              <option value="grid">Grid</option>
+              <option value="inline-grid">Inline Grid</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Position</label>
+            <select class="property-input" data-prop="position">
+              <option value="">Auto</option>
+              <option value="static">Static</option>
+              <option value="relative">Relative</option>
+              <option value="absolute">Absolute</option>
+              <option value="fixed">Fixed</option>
+              <option value="sticky">Sticky</option>
+            </select>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Z-Index</label>
+            <input type="text" class="property-input" data-prop="zIndex" placeholder="auto">
+          </div>
+        </div>
+
+        <!-- Effects -->
+        <div class="property-group">
+          <div class="group-header">
+            <span>Effects</span>
+            <span class="group-toggle">▼</span>
+          </div>
+          <div class="property-row">
+            <label class="property-label">Box Shadow</label>
+            <input type="text" class="property-input" data-prop="boxShadow" placeholder="0 2px 4px rgba(0,0,0,0.1)">
+          </div>
+          <div class="property-row">
+            <label class="property-label">Filter</label>
+            <input type="text" class="property-input" data-prop="filter" placeholder="blur(0)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tailwind Tab -->
+    <div class="tab-content" id="tab-tailwind">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="tw-search" placeholder="Search classes (e.g., bg-red-500, flex, p-4)">
+      </div>
+      <div class="applied-classes" id="applied-classes">
+        <!-- Applied classes will be shown here -->
+      </div>
+      <div id="tw-suggestions">
+        <!-- Suggestions will be shown here -->
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div class="tab-content" id="tab-history">
+      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <button class="btn btn-secondary btn-sm btn-full" id="btn-undo" disabled>↶ Undo</button>
+        <button class="btn btn-secondary btn-sm btn-full" id="btn-redo" disabled>↷ Redo</button>
+      </div>
+      <ul class="history-list" id="history-list">
+        <!-- History items will be shown here -->
+      </ul>
+    </div>
+
+    <!-- Export Tab -->
+    <div class="tab-content" id="tab-export">
+      <div class="export-options">
+        <select class="export-format" id="export-format">
+          <option value="css">CSS</option>
+          <option value="tailwind">Tailwind Classes</option>
+          <option value="json">JSON</option>
+        </select>
+      </div>
+      <div class="code-preview" id="export-preview">
+        /* CSS will be generated here */
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-primary btn-sm btn-full" id="btn-copy">📋 Copy</button>
+        <button class="btn btn-secondary btn-sm btn-full" id="btn-download">⬇ Download</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="footer-actions">
+    <button class="btn btn-secondary btn-sm btn-full" id="btn-clear-selection">Clear Selection</button>
+    <button class="btn btn-primary btn-sm btn-full" id="btn-save">💾 Save</button>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
